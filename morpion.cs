@@ -14,12 +14,18 @@ class Program
 
         char joueur1 = 'X';
         char joueur2 = 'O';
-        DrawGrille(grilleMorpion);
+        DessineGrille(grilleMorpion);
 
-        while (!ConditionVictoire(grilleMorpion, joueur2) && !ConditionVictoire(grilleMorpion, joueur1) && !ConditionArret(grilleMorpion))
+        while (!ConditionVictoire(grilleMorpion, joueur2) && !ConditionVictoire(grilleMorpion, joueur1) && !GrillePleine(grilleMorpion))
         {
             Placement(grilleMorpion, joueur1);
-            DrawGrille(grilleMorpion);
+            DessineGrille(grilleMorpion);
+
+            if (GrillePleine(grilleMorpion))
+            {
+                Console.WriteLine("La partie est un match nul");
+                break;
+            }
 
             if (ConditionVictoire(grilleMorpion, joueur1))
             {
@@ -28,7 +34,7 @@ class Program
             }
 
             Placement(grilleMorpion, joueur2);
-            DrawGrille(grilleMorpion);
+            DessineGrille(grilleMorpion);
 
             if (ConditionVictoire(grilleMorpion, joueur2))
             {
@@ -36,12 +42,8 @@ class Program
                 break;
             }
 
-            if (ConditionArret(grilleMorpion))
-            {
-                Console.WriteLine("La partie est un match nul ");
-                break;
-            }
         }
+
     }
 
     static (int i, int j) Mouvement(char joueur)
@@ -96,7 +98,7 @@ class Program
         return (i, j);
     }
 
-    static void DrawGrille(char[,] grille)
+    static void DessineGrille(char[,] grille)
     {
         for (int i = 0; i < grille.GetLength(0); i++)
         {
@@ -143,20 +145,27 @@ class Program
                 grille[0, 4] == joueur && grille[2, 2] == joueur && grille[4, 0] == joueur);
     }
 
-    static bool ConditionArret(char[,] grille)
+    static bool GrillePleine(char[,] grille)
     {
+        int casePrise = 0;
         for (int i = 0; i < grille.GetLength(0); i++)
         {
             for (int j = 0; j < grille.GetLength(1); j++)
             {
-                if (grille[i, j] == ' ')
+                if (grille[i, j] != ' ')
                 {
-                    return false;
+                    casePrise++;
                 }
             }
         }
-
-        return true;
+        if (casePrise == 25)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     static bool ConditionVictoire(char[,] grille, char joueur)
